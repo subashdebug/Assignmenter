@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HandRewrite</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%2321403a%27%2F%3E%3Crect%20x%3D%2718%27%20y%3D%2716%27%20width%3D%277%27%20height%3D%2732%27%20fill%3D%27%23ffd84d%27%2F%3E%3Crect%20x%3D%2739%27%20y%3D%2716%27%20width%3D%277%27%20height%3D%2732%27%20fill%3D%27%23ffd84d%27%2F%3E%3Crect%20x%3D%2718%27%20y%3D%2728%27%20width%3D%2728%27%20height%3D%276%27%20fill%3D%27%23ffd84d%27%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#f4eddc;--ink:#1d3c8f;--graphite:#25272e;--muted:#6b685e;--margin:#e07a72;--marker:#ffd84d}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--graphite);font:16px/1.55 'IBM Plex Sans',system-ui,sans-serif;background-color:var(--paper);background-image:repeating-linear-gradient(to bottom,transparent 0 35px,#d3dff0 35px 36px)}
+a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding-top:22px}
+.mark{font:600 34px/1 Caveat,cursive;color:var(--ink);text-decoration:none}
+.nav a.open{font-weight:500;color:var(--graphite);text-decoration:none;border-bottom:1.5px solid var(--ink);padding-bottom:2px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:56px 0 72px}
+h1{font:600 clamp(56px,7.4vw,100px)/.98 Caveat,cursive;color:var(--ink);margin:0 0 22px;letter-spacing:-.5px}
+.lead{font-size:19px;color:var(--muted);max-width:30ch;margin:0 0 30px}
+.cta{display:inline-block;background:var(--ink);color:#fbf8f0;padding:16px 28px;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 12px 24px -14px #1d3c8fcc;transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+.fine{margin-left:14px;font-size:14px;color:var(--muted)}
+.stack{position:relative;height:430px}
+.photo{position:absolute;left:0;top:34px;width:280px;height:340px;transform:rotate(-7deg);border-radius:4px;background:#ecebe6 repeating-linear-gradient(to bottom,transparent 0 22px,#b6b4ad 22px 23px);box-shadow:0 18px 30px -18px #0008;filter:grayscale(1)}
+.tape{position:absolute;top:-10px;left:50%;width:90px;height:22px;background:#e8dcb5b8;transform:translateX(-50%) rotate(3deg)}
+.sheet{position:absolute;right:0;top:60px;width:330px;height:370px;transform:rotate(3deg);padding:34px 30px;border-radius:3px;background:#fbf8f0 repeating-linear-gradient(to bottom,transparent 0 35px,#b9cde6 35px 36px);box-shadow:0 22px 40px -20px #0008}
+.sheet p{margin:0;font:500 26px/36px Caveat,cursive;color:var(--ink);clip-path:inset(0 100% 0 0);animation:write .9s ease forwards}
+.sheet p:nth-child(1){animation-delay:.3s}.sheet p:nth-child(2){animation-delay:1.1s}.sheet p:nth-child(3){animation-delay:1.9s}.sheet p:nth-child(4){animation-delay:2.7s}
+@keyframes write{to{clip-path:inset(0 0 0 0)}}
+.sheet mark{background:linear-gradient(transparent 38%,var(--marker) 38% 92%,transparent 92%);color:inherit;padding:0 3px}
+.steps{padding:8px 0 80px}
+.steps ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.n{font:600 58px/1 Caveat,cursive;color:var(--ink)}
+h2,h3{font:600 20px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin:6px 0}
+.steps p{margin:0;color:var(--muted)}
+footer{border-top:1px solid #cdbfa3;padding:24px 0 36px;color:var(--muted);font-size:14px}
+@media(max-width:860px){.hero{grid-template-columns:1fr;padding-top:32px}.stack{height:400px;max-width:420px;margin:0 auto;width:100%}.steps ol{grid-template-columns:1fr;gap:24px}}
+@media(prefers-reduced-motion:reduce){.sheet p{clip-path:none;animation:none}.cta{transition:none}}
+
+.word{display:inline-block;opacity:0;transform:translateY(.4em);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i) * 90ms + 150ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.photo{position:absolute;left:0;top:34px;width:280px;height:340px;transform:rotate(-7deg);animation:enter 1s cubic-bezier(.2,.7,.2,1) .1s both}
+.photo-in{width:100%;height:100%;border-radius:4px;background:#ecebe6 repeating-linear-gradient(to bottom,transparent 0 22px,#b6b4ad 22px 23px);box-shadow:0 18px 30px -18px #0008;filter:grayscale(1);position:relative;animation:float 6s ease-in-out 1.2s infinite}
+@keyframes enter{from{opacity:0;transform:translateY(40px) rotate(-2deg)}to{opacity:1;transform:rotate(-7deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.sheet{animation:sheetIn .9s .25s cubic-bezier(.2,.7,.2,1) both}
+@keyframes sheetIn{from{opacity:0;transform:translateY(28px) rotate(7deg)}to{opacity:1;transform:rotate(3deg)}}
+.sheet mark{background:linear-gradient(var(--marker),var(--marker)) no-repeat 0 62%/0 40%;animation:mark .6s 3.6s ease forwards;padding:0 3px}
+@keyframes mark{to{background-size:100% 40%}}
+.cta{position:relative;overflow:hidden}
+.cta::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#ffffff55 50%,transparent 70%);transform:translateX(-120%)}
+.cta:hover::after{animation:shine .8s ease}
+@keyframes shine{to{transform:translateX(120%)}}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.steps li:nth-child(2){transition-delay:.12s}.steps li:nth-child(3){transition-delay:.24s}
+.steps li{transition-property:opacity,transform}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.word,.reveal{opacity:1;transform:none}.sheet p{clip-path:none}.photo,.sheet{opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="nav">
+<a class="mark" href="index.html">HandRewrite</a>
+<a class="open" href="app.html">Open the app</a>
+</header>
+
+<main class="hero">
+<div>
+<h1><span class="word" style="--i:0">Your</span> <span class="word" style="--i:1">assignment,</span> <span class="word" style="--i:2">in</span> <span class="word" style="--i:3">your</span> <span class="word" style="--i:4">own</span> <span class="word" style="--i:5">hand.</span></h1>
+<p class="lead">Snap a page. Check every line. Download a clean copy that looks like you wrote it.</p>
+<a class="cta" href="app.html">Start with a photo</a><span class="fine">Free. No account.</span>
+</div>
+<div class="stack" aria-hidden="true">
+<div class="photo"><div class="photo-in"><div class="tape"></div></div></div>
+<div class="sheet">
+<p>Chapter 3: Light reactions</p>
+<p>1. Name the two stages.</p>
+<p>Stage one needs <mark>sunlight</mark>.</p>
+<p>Stage two builds sugar.</p>
+</div>
+</div>
+</main>
+
+<section class="steps" aria-labelledby="how">
+<h2 id="how">How it works</h2>
+<ol>
+<li class="reveal"><span class="n">1</span><h3>Take a photo</h3><p>Upload from your phone or laptop.</p></li>
+<li class="reveal"><span class="n">2</span><h3>Check the text</h3><p>Fix any unclear word right on the page.</p></li>
+<li class="reveal"><span class="n">3</span><h3>Download</h3><p>Get a PDF or PNG, or print it.</p></li>
+</ol>
+</section>
+
+<footer>Photos stay in your browser unless you turn on the optional Gemini reader.</footer>
+</div>
+<script>
+const items=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.2});
+  items.forEach(el=>io.observe(el));
+}else items.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>
