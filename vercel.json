@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/transcribe.js": {
-      "maxDuration": 60
-    }
-  }
-}
