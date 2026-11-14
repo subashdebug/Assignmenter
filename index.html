@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HandRewrite</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%2321403a%27%2F%3E%3Crect%20x%3D%2718%27%20y%3D%2716%27%20width%3D%277%27%20height%3D%2732%27%20fill%3D%27%23ffd84d%27%2F%3E%3Crect%20x%3D%2739%27%20y%3D%2716%27%20width%3D%277%27%20height%3D%2732%27%20fill%3D%27%23ffd84d%27%2F%3E%3Crect%20x%3D%2718%27%20y%3D%2728%27%20width%3D%2728%27%20height%3D%276%27%20fill%3D%27%23ffd84d%27%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--desk:#0e1626;--glow:#1d3055;--paper:#f6f1e4;--ink:#1f4cc0;--text:#eef2fb;--muted:#9aa6c2;--marker:#ffd84d;--line:#2a3a60}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font:16px/1.6 'IBM Plex Sans',system-ui,sans-serif;background:radial-gradient(ellipse 80% 60% at 50% 0%,var(--glow),var(--desk) 70%) fixed;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27180%27%20height%3D%27180%27%3E%3Cfilter%20id%3D%27n%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.75%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20values%3D%270%200%200%200%201%20%200%200%200%200%201%20%200%200%200%200%201%20%200%200%200%20.05%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%2F%3E%3C%2Fsvg%3E"),radial-gradient(ellipse 80% 60% at 50% 0%,var(--glow),var(--desk) 70%);background-attachment:fixed}
+a:focus-visible,input:focus-visible{outline:2px solid var(--marker);outline-offset:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding-top:24px}
+.mark{font:700 38px/1 Caveat,cursive;color:var(--text);text-decoration:none}
+.nav .open{color:var(--text);text-decoration:none;border:1.5px solid var(--muted);border-radius:999px;padding:9px 18px;transition:border-color .2s,color .2s}
+.nav .open:hover{border-color:var(--marker);color:var(--marker)}
+
+.hero{text-align:center;padding:72px 0 0}
+h1{font:700 clamp(68px,10vw,132px)/.9 Caveat,cursive;margin:0 0 20px;letter-spacing:-1px}
+.word{display:inline-block;opacity:0;transform:translateY(.45em);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i) * 110ms + 150ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.lead{color:var(--muted);font-size:19px;margin:0 auto;max-width:44ch}
+
+.compare{position:relative;width:100%;max-width:960px;height:min(560px,64vw);margin:48px auto 0;border-radius:10px;overflow:hidden;box-shadow:0 50px 90px -40px #000c,0 0 0 1px #ffffff14;--pos:50%}
+.layer{position:absolute;inset:0}
+.before{background:#cdc8bc}
+.before::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 40% 30%,#ffffff40 0,transparent 55%),radial-gradient(ellipse at center,transparent 50%,#0007)}
+.after{background:var(--paper) repeating-linear-gradient(to bottom,transparent 0 36px,#cad9ee 36px 37px);clip-path:inset(0 0 0 var(--pos))}
+.after::before{content:"";position:absolute;left:72px;top:0;bottom:0;width:2px;background:#e07a72;opacity:.8}
+.text{position:absolute;left:112px;right:56px;top:0;padding-top:66px;font:500 31px/37px Caveat,cursive}
+.text p{margin:0;min-height:37px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.before .text{color:#55524b;font-weight:400;filter:blur(.35px)}
+.before .text p:nth-child(odd){transform:rotate(-.8deg) translateX(-3px)}
+.before .text p:nth-child(even){transform:rotate(.6deg) translateY(3px)}
+.before .text p:nth-child(3){transform:rotate(-1.2deg) translateX(5px)}
+.after .text{color:var(--ink)}
+.divider{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:#fffffff0;box-shadow:0 0 12px #0008;pointer-events:none}
+.knob{position:absolute;top:50%;left:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#fff;color:#1a2238;display:grid;place-items:center;font:600 20px/1 'IBM Plex Sans',system-ui,sans-serif;box-shadow:0 8px 22px #0007;letter-spacing:-2px}
+.slider{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:3}
+.tags{display:flex;justify-content:space-between;max-width:960px;margin:16px auto 0;color:var(--muted);font-size:15px}
+.tags span:last-child{color:var(--marker)}
+
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;max-width:960px;margin:96px auto 0}
+.features div{border-top:1px solid var(--line);padding-top:22px}
+h2{font:600 21px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin:0 0 8px}
+.features p{margin:0;color:var(--muted)}
+
+.close{text-align:center;padding:110px 0 40px}
+.close h2{font:700 clamp(50px,7vw,88px)/.95 Caveat,cursive;margin:0 0 34px}
+.cta{display:inline-block;background:var(--marker);color:#17191e;padding:18px 36px;border-radius:999px;font-weight:600;font-size:17px;text-decoration:none;box-shadow:0 14px 30px -14px #ffd84d99;transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+.close .fine{display:block;margin-top:18px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);padding:28px 0 36px;color:var(--muted);font-size:14px;text-align:center}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.features div:nth-child(2){transition-delay:.12s}.features div:nth-child(3){transition-delay:.24s}
+
+@media(max-width:820px){.features{grid-template-columns:1fr;gap:28px}.text{left:68px;right:24px;font-size:26px;line-height:32px;padding-top:54px}.text p{line-height:32px;min-height:32px}.after::before{left:44px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.word,.reveal{opacity:1;transform:none}}
+
+.hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#0b0f1ccc;color:#fff;padding:8px 16px;border-radius:999px;font-size:14px;pointer-events:none;z-index:2;transition:opacity .4s ease;white-space:nowrap}
+.compare.used .hint{opacity:0}
+.knob{transition:transform .2s ease}
+.compare.dragging .knob{transform:scale(1.14)}
+.samples{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:0 0 40px}
+figure{margin:0}
+.thumb{width:176px;height:122px;border-radius:6px;background-color:var(--paper);background-image:repeating-linear-gradient(to bottom,transparent 0 22px,#cad9ee 22px 23px);box-shadow:0 12px 26px -14px #000c;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.thumb p{font:500 24px/1 Caveat,cursive;color:var(--ink);margin:0}
+.printed i{display:block;width:118px;height:6px;background:#8e8c86;margin:7px 0;border-radius:3px;opacity:.75}
+figcaption{color:var(--muted);font-size:14px;margin-top:10px;text-align:center}
+@media(max-width:820px){.compare{height:380px;margin-top:36px}.hero{padding-top:44px}.text{padding-top:44px}.thumb{width:150px;height:104px}.samples{gap:14px}}
+@media(max-width:520px){.compare{height:340px}.text{left:58px;right:14px;font-size:23px;line-height:30px}.text p{line-height:30px;min-height:30px}.after::before{left:40px}.thumb{width:110px;height:92px}.thumb p{font-size:18px}.printed i{width:70px}figcaption{font-size:12px}.samples{gap:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="nav">
+<a class="mark" href="index.html">HandRewrite</a>
+<a class="open" href="app.html">Open the app</a>
+</header>
+
+<main class="hero">
+<h1><span class="word" style="--i:0">Same</span> <span class="word" style="--i:1">words.</span> <span class="word" style="--i:2">Your</span> <span class="word" style="--i:3">hand.</span></h1>
+<p class="lead">Drag the line to compare your photo with the page HandRewrite writes back.</p>
+
+<div class="compare" id="compare">
+<div class="layer before"><div class="text" id="before-text"></div></div>
+<div class="layer after"><div class="text" id="after-text"></div></div>
+<div class="divider" aria-hidden="true"><div class="knob">&lsaquo;&rsaquo;</div></div>
+<input class="slider" id="slider" type="range" min="0" max="100" value="50" aria-label="Compare your photo with the handwritten page">
+<div class="hint" aria-hidden="true">Drag to compare</div>
+</div>
+<div class="tags"><span>Your photo</span><span>Your page</span></div>
+</main>
+
+<section class="features" aria-label="What you get">
+<div class="reveal"><h2>Every word, as written</h2><p>Mistakes stay mistakes. Nothing is corrected or reworded.</p></div>
+<div class="reveal"><h2>Spacing kept</h2><p>Blank lines, indents and gaps follow the photo.</p></div>
+<div class="reveal"><h2>You make the final call</h2><p>Edit any line, move diagrams, then export.</p></div>
+</section>
+
+<section class="close reveal">
+<h2>Your next assignment, in your hand.</h2>
+<div class="samples" aria-hidden="true">
+<figure><div class="thumb"><p>x&sup2; + 3x &minus; 4 = 0</p></div><figcaption>Maths</figcaption></figure>
+<figure><div class="thumb"><svg viewBox="0 0 120 80" width="110" height="74"><path d="M10 70 H112 M10 70 V8" stroke="#1f4cc0" fill="none" stroke-width="2"/><path d="M14 56 C40 20 70 60 104 14" stroke="#1f4cc0" fill="none" stroke-width="2.4" stroke-linecap="round"/></svg></div><figcaption>Diagrams</figcaption></figure>
+<figure><div class="thumb printed"><i></i><i></i><i></i><i></i></div><figcaption>Printed pages</figcaption></figure>
+</div>
+<a class="cta" href="app.html">Try it on your assignment</a>
+<span class="fine">Free, no account. Photos stay in your browser unless you turn on the optional Gemini reader.</span>
+</section>
+
+<footer>HandRewrite</footer>
+</div>
+<script>
+const LINES=['Chapter 3: Light reactions','1. Name the two stages of photosynthesis.','a) Light-dependent reactions need sunlight.','b) Calvin cycle builds sugar from CO2.','Rate = Δ[sugar] / Δt'];
+const fill=id=>{const el=document.getElementById(id);LINES.forEach(t=>{const p=document.createElement('p');p.textContent=t;el.appendChild(p)})};
+fill('before-text');fill('after-text');
+
+const compare=document.getElementById('compare'),slider=document.getElementById('slider');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let touched=false;
+function setPos(v){compare.style.setProperty('--pos',v+'%');slider.value=v}
+slider.addEventListener('input',e=>{touched=true;compare.classList.add('used');setPos(e.target.value)});
+['pointerdown','touchstart'].forEach(ev=>slider.addEventListener(ev,()=>compare.classList.add('dragging'),{passive:true}));
+['pointerup','pointercancel','touchend','blur'].forEach(ev=>slider.addEventListener(ev,()=>compare.classList.remove('dragging')));
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function tween(a,b,ms){return new Promise(res=>{const t0=performance.now();(function step(now){if(touched)return res();const t=Math.min(1,(now-t0)/ms);setPos(a+(b-a)*ease(t));t<1?requestAnimationFrame(step):res()})(t0)})}
+async function intro(){await sleep(400);await tween(50,16,900);await tween(16,84,1300);await tween(84,50,900)}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+if(!reduce){intro()}
+
+const items=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.2});
+  items.forEach(el=>io.observe(el));
+}else items.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>
